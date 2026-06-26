@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA CBT | MTH 102</title>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; }
+        header { background: #001f3f; color: white; padding: 20px; text-align: center; border-bottom: 5px solid #ff851b; }
+        .gpa-glow { text-shadow: 0 0 10px #ff851b, 0 0 20px #ff851b; color: #ff851b; font-weight: bold; }
+        .main-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 20px; padding: 10px; }
+        .quiz-area { flex: 3; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .nav-sidebar { flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); height: fit-content; }
+        .navigator { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .nav-box { border: 1px solid #001f3f; padding: 12px; text-align: center; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .nav-box.answered { background: #28a745; color: white; border: none; }
+        .nav-box.active { background: #ff851b; color: white; border: none; }
+        .options { list-style: none; padding: 0; }
+        .options li { padding: 15px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        .options li:hover { background: #eef3f8; }
+        .options li.selected { background: #001f3f !important; color: white; border-color: #001f3f; }
+        .controls { margin-top: 30px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; background: #ff851b; }
+        button:hover { background: #e67300; }
+        .footer-ad { text-align: center; margin-top: 40px; padding: 30px; border-top: 2px solid #001f3f; background: #fff; }
+    </style>
+</head>
+<body>
+    <header><h1>Genius Point Academy <span class="gpa-glow">GPA</span></h1></header>
+    
+    <div class="main-layout">
+        <div class="quiz-area" id="quiz-screen">
+            <div id="question-container"></div>
+            <div class="controls">
+                <button onclick="changeQuestion(-1)">Previous</button>
+                <button onclick="changeQuestion(1)">Next</button>
+                <button onclick="submitQuiz()" style="background:#001f3f;">Submit Test</button>
+            </div>
+        </div>
+        <div class="nav-sidebar">
+            <h3>Question Navigator</h3>
+            <div class="navigator" id="nav-boxes"></div>
+        </div>
+    </div>
+
+    <div class="footer-ad">
+        <p>🚀 Love GPA? <a href="https://chat.whatsapp.com/EfRqG1ekcym0MflO4MiEFj" target="_blank">Join our Community</a></p>
+        <p>🌐 <a href="https://geniuspointacademy.github.io" target="_blank">Explore GPA Website</a></p>
+    </div>
+
+    <script src="banks/limits.js"></script>
+    <script src="banks/derivatives.js"></script>
+    <script src="banks/functions.js"></script>
+    <script src="banks/graphs.js"></script>
+
+    <script>
+        let quizQuestions = [];
+        let selectedAnswers = new Array(20).fill(null);
+        let currentIdx = 0;
+
+        function startQuiz() {
+            // Randomly pick 5 from each bank and shuffle the final 20
+            quizQuestions = [
+                ...limits.sort(() => 0.5 - Math.random()).slice(0, 5),
+                ...derivatives.sort(() => 0.5 - Math.random()).slice(0, 5),
+                ...functions.sort(() => 0.5 - Math.random()).slice(0, 5),
+                ...graphs.sort(() => 0.5 - Math.random()).slice(0, 5)
+            ].sort(() => 0.5 - Math.random());
+
+            const nav = document.getElementById('nav-boxes');
+            for(let i=0; i<20; i++) {
+                let box = document.createElement('div');
+                box.className = 'nav-box';
+                box.innerText = i + 1;
+                box.id = `nav-${i}`;
+                box.onclick = () => showQuestion(i);
+                nav.appendChild(box);
+            }
+            showQuestion(0);
+        }
+
+        function showQuestion(i) {
+            currentIdx = i;
+            const q = quizQuestions[i];
+            const container = document.getElementById('question-container');
+            
+            let html = `<h3>Q${i+1}: ${q.q}</h3><ul class="options">`;
+            q.options.forEach((o, idx) => {
+                html += `<li class="${selectedAnswers[i]===idx ? 'selected' : ''}" onclick="selectOption(${i}, ${idx})">${o}</li>`;
+            });
+            html += `</ul>`;
+            container.innerHTML = html;
+            
+            document.querySelectorAll('.nav-box').forEach((b, idx) => {
+                b.className = `nav-box ${selectedAnswers[idx]!==null ? 'answered' : ''} ${idx===i ? 'active' : ''}`;
+            });
+
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function selectOption(qIdx, optIdx) {
+            selectedAnswers[qIdx] = optIdx;
+            showQuestion(qIdx);
+        }
+
+        function changeQuestion(step) {
+            if(currentIdx + step >= 0 && currentIdx + step < 20) showQuestion(currentIdx + step);
+        }
+
+        function submitQuiz() {
+            let score = selectedAnswers.filter((a, i) => a === quizQuestions[i].answer).length;
+            alert("Test Submitted! Your Score: " + score + "/20");
+        }
+
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

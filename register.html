@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | GPA CBT</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #001f3f; /* Navy Blue */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid #ff851b; /* Orange */
+        }
+        .form-container h2 {
+            text-align: center;
+            color: #001f3f;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn-start {
+            background-color: #ff851b;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-start:hover {
+            background-color: #e67300;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Enter Your Details</h2>
+    <form id="studentForm">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="e.g. John Doe" required>
+
+        <label for="department">Department</label>
+        <input type="text" id="department" placeholder="e.g. EEE" required>
+
+        <button type="submit" class="btn-start">Start Quiz</button>
+    </form>
+</div>
+
+<script>
+    // Handle form submission without refreshing the page
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        // Get values
+        const name = document.getElementById('fullName').value;
+        const dept = document.getElementById('department').value;
+        
+        // Save to browser memory
+        localStorage.setItem('studentName', name);
+        localStorage.setItem('studentDept', dept);
+        
+        // Redirect to the actual quiz page
+        window.location.href = 'quiz.html';
+    });
+</script>
+
+</body>
+</html>
