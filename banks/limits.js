@@ -1,0 +1,45 @@
+const limits = [
+    // --- From PRACTICE ON LIMITS.pdf ---
+    { q: "Evaluate \\(\\lim_{x\\rightarrow2}\\frac{x^{2}-4}{x^{2}+4}\\)", options: ["1", "0", "-\\(\\frac{1}{2}\\)", "-1", "\\(\\infty\\)"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}\\frac{4-x^{2}}{x^{2}-1}\\)", options: ["1", "0", "-4", "-1", "\\(\\infty\\)"], answer: 3 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow3}\\frac{x-3}{x^{2}-2x-3}\\)", options: ["0", "1", "\\(\\frac{1}{4}\\)", "\\(\\infty\\)", "none of these"], answer: 2 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{x}{x}\\)", options: ["1", "0", "\\(\\infty\\)", "-1", "nonexistent"], answer: 0 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow2}\\frac{x^{3}-8}{x^{2}-4}\\)", options: ["4", "0", "1", "3", "\\(\\infty\\)"], answer: 3 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}\\frac{4-x^{2}}{4x^{2}-x-2}\\)", options: ["-2", "-\\(\\frac{1}{4}\\)", "1", "2", "nonexistent"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}\\frac{5x^{3}+27}{20x^{2}+10x+9}\\)", options: ["\\(\\infty\\)", "\\(\\frac{1}{4}\\)", "3", "0", "1"], answer: 0 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow6}\\frac{3x^{2}+27}{x^{3}-27}\\)", options: ["3", "\\(\\infty\\)", "1", "-1", "0"], answer: 4 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}\\frac{2^{-x}}{2^{x}}\\)", options: ["-1", "1", "0", "\\(\\infty\\)", "none of these"], answer: 2 },
+    { q: "If \\([x]\\) is the greatest integer not greater than x, then \\(\\lim_{x\\rightarrow1/2}[x]\\) is", options: ["\\(\\frac{1}{2}\\)", "1", "nonexistent", "0", "none of these"], answer: 3 },
+    { q: "(With the same notation) \\(\\lim_{x\\rightarrow1}[x]\\) is", options: ["0", "1", "2", "3", "none of these"], answer: 4 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{\\tan x}{x}\\)", options: ["0", "1", "\\(\\pi\\)", "\\(\\infty\\)", "The limit does not exist"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{\\sin 2x}{x}\\)", options: ["1", "2", "\\(\\frac{1}{2}\\)", "0", "\\(\\infty\\)"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}\\sin x\\)", options: ["is nonexistent", "is infinity", "oscillates between -1 and 1", "is zero", "is 1 or -1"], answer: 0 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{\\sin 3x}{\\sin 4x}\\)", options: ["1", "\\(\\frac{4}{3}\\)", "\\(\\frac{3}{4}\\)", "0", "nonexistent"], answer: 2 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{1-\\cos x}{x}\\)", options: ["nonexistent", "1", "2", "\\(\\infty\\)", "0"], answer: 4 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{\\sin x}{x^{2}+3x}\\)", options: ["1", "\\(\\frac{1}{3}\\)", "nonexistent", "-1", "none of these"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\sin\\frac{1}{x}\\)", options: ["\\(\\infty\\)", "1", "nonexistent", "\\(\\frac{1}{4}\\)", "none of these"], answer: 2 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{\\tan \\pi x}{x}\\)", options: ["\\(\\frac{1}{\\pi}\\)", "0", "1", "\\(\\pi\\)", "\\(\\infty\\)"], answer: 3 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}x^{2}\\sin\\frac{1}{x}\\)", options: ["is 1", "is 0", "is \\(\\infty\\)", "oscillates between -1 and 1", "is none of these"], answer: 2 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}x\\csc x\\)", options: ["-\\(\\infty\\)", "-1", "0", "1", "\\(\\infty\\)"], answer: 3 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}\\frac{2x^{2}+1}{(2-x)(2+x)}\\)", options: ["-4", "-2", "1", "2", "nonexistent"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{|x|}{x}\\)", options: ["0", "nonexistent", "1", "-1", "none of these"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\infty}x\\sin\\frac{1}{x}\\)", options: ["0", "\\(\\infty\\)", "nonexistent", "-1", "1"], answer: 4 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow\\pi}\\frac{\\sin(\\pi-x)}{\\pi-x}\\)", options: ["1", "0", "\\(\\infty\\)", "nonexistent", "none of these"], answer: 0 },
+    { q: "If \\([x]\\) is the greatest integer in \\(x\\), then what is \\(\\lim_{x\\rightarrow-1}[x+1]\\)?", options: ["-1", "0", "1", "2", "The limit does not exist"], answer: 4 },
+    { q: "Let \\(f(x)=\\begin{cases}x^{2}-1 & x \\neq 1 \\\\ 4 & x = 1\\end{cases}\\). Which statements are true? I: \\(\\lim_{x\\rightarrow1}f(x)\\) exists, II: \\(f(1)\\) exists, III: \\(f\\) is continuous at \\(x=1\\)", options: ["only I", "only II", "I and II", "none of them", "all of them"], answer: 2 },
+    { q: "If \\(f(x)=\\begin{cases}\\frac{x^{2}-x}{2x} & x \\neq 0 \\\\ k & x=0\\end{cases}\\) is continuous at \\(x=0\\), then \\(k=\\)", options: ["-1", "-\\(\\frac{1}{2}\\)", "0", "\\(\\frac{1}{2}\\)", "1"], answer: 1 },
+    { q: "Suppose \\(f(x)=\\begin{cases}\\frac{3x(x-1)}{x^{2}-3x+2} & x \\neq 1,2 \\\\ -3 & x=1 \\\\ 4 & x=2\\end{cases}\\). \\(f(x)\\) is continuous", options: ["except at x=1", "except at x=2", "except at x=1 or 2", "except at x=0, 1, or 2", "at each real number"], answer: 1 },
+    
+    // --- From MTS 102 COMPILED TEST QUESTIONS ---
+    { q: "Evaluate \\(\\lim_{x\\rightarrow-4}(x+1)^{1998}\\)", options: ["-3^{1998}", "3^{1998}", "1", "0"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow2}\\frac{x^{3}-8}{x-2}\\)", options: ["12", "8", "4", "0"], answer: 0 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{1-\\cos x}{x}\\)", options: ["0", "1", "2", "undefined"], answer: 0 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow2}\\frac{x^{2}+4}{x^{4}-8}\\)", options: ["1", "0", "4", "8"], answer: 0 },
+
+    // --- From MTS 102 QUESTIONS AND ANSWERS ON ORC ---
+    { q: "Evaluate \\(\\lim_{x\\rightarrow2}\\frac{x^{3}-8}{x-2}\\)", options: ["6", "12", "0", "\\(\\infty\\)"], answer: 1 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{\\sin x}{x}\\)", options: ["0", "1", "undefined", "Does not exist"], answer: 1 },
+    { q: "The limit \\(\\lim \\sin z\\) is:", options: ["0", "1", "Does not exist", "-1"], answer: 2 },
+    { q: "Evaluate \\(\\lim_{x\\rightarrow0}\\frac{1-\\cos x}{x}\\)", options: ["0", "1", "undefined", "undefined"], answer: 0 },
+    { q: "For \\(f(x)=\\begin{cases}x^{2}-9 & x \\neq 3 \\\\ x-3 & x=3\\end{cases}\\), the limit as \\(x\\rightarrow3\\) is:", options: ["0", "6", "undefined", "9"], answer: 1 }
+];
