@@ -2,150 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPA CBT Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GPA CBT | MTH 102</title>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #001f3f; /* Navy Blue */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        header {
-            background-color: #001f3f;
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 5px solid #ff851b; /* Orange */
-        }
-        .container {
-            max-width: 800px;
-            width: 90%;
-            margin: 40px auto;
-        }
-        .course-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 5px solid #ff851b;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .course-card.disabled {
-            border-left: 5px solid #999; /* Grey border for inactive */
-            background-color: #f9f9f9;
-        }
-        .course-card.disabled h2, .course-card.disabled p {
-            color: #666;
-        }
-        .course-info h2 {
-            margin: 0 0 10px 0;
-        }
-        .btn {
-            background-color: #ff851b;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: 0.3s;
-            text-align: center;
-            min-width: 120px;
-        }
-        .btn:hover {
-            background-color: #e67300;
-        }
-        .btn-disabled {
-            background-color: #ccc;
-            color: #666;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-            min-width: 120px;
-            cursor: not-allowed;
-        }
-        /* Mobile responsiveness */
-        @media (max-width: 600px) {
-            .course-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .btn, .btn-disabled {
-                margin-top: 15px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-        }
+        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        header { background: #001f3f; color: white; padding: 15px; border-radius: 5px; text-align: center; }
+        .gpa-branding { color: #ff851b; font-weight: bold; }
+        .quiz-area { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: 20px auto; }
+        .navigator { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 20px 0; }
+        .nav-box { border: 1px solid #001f3f; padding: 8px; text-align: center; cursor: pointer; font-size: 0.9em; }
+        .nav-box.answered { background: #28a745; color: white; border: none; }
+        .nav-box.active { background: #ff851b; color: white; border: none; }
+        .options { list-style: none; padding: 0; }
+        .options li { padding: 15px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        .options li.selected { background: #001f3f !important; color: white; border-color: #001f3f; }
+        .controls { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 5px; cursor: pointer; color: white; background: #ff851b; font-weight: bold; }
+        .dance-btn { animation: dance 1s infinite alternate; background: #28a745; display: block; text-align: center; padding: 10px; color: white; border-radius: 5px; margin-top: 20px; text-decoration: none; }
+        @keyframes dance { from { transform: translateY(0); } to { transform: translateY(-5px); } }
     </style>
 </head>
 <body>
-
-<header>
-    <h1>Genius Point Academy</h1>
-    <p>Computer Based Test (CBT) Portal</p>
-</header>
-
-<div class="container">
-    <h2>Available Tests</h2>
+    <header>
+        <h1>GPA <span class="gpa-branding">CBT</span></h1>
+        <div id="time-display" style="font-size: 1.2em; color: #ff851b;">10:00</div>
+    </header>
     
-    <!-- Active Course: MTH 102 -->
-    <div class="course-card">
-        <div class="course-info">
-            <h2>MTH 102: Functions, Graphs, Limits & Differentiations</h2>
-            <p>20 Questions | 10 Minutes</p>
+    <div class="quiz-area" id="quiz-screen">
+        <div id="question-container"></div>
+        <div class="navigator" id="nav-boxes"></div>
+        <div class="controls">
+            <button onclick="changeQuestion(-1)">Prev</button>
+            <button onclick="changeQuestion(1)">Next</button>
+            <button onclick="submitQuiz()" style="background:#001f3f;">Submit</button>
         </div>
-        <a href="register.html?course=MTH102" class="btn">Take Test</a>
+        <a href="https://chat.whatsapp.com/EfRqG1ekcym0MflO4MiEFj" class="dance-btn">Join GPA Community 🚀</a>
     </div>
 
-    <hr style="border: 0; border-top: 1px solid #ddd; margin: 30px 0;">
-    <h2>Upcoming Tests</h2>
+    <script src="banks/limits.js"></script>
+    <script src="banks/derivatives.js"></script>
+    <script src="banks/functions.js"></script>
+    <script src="banks/graphs.js"></script>
 
-    <!-- Inactive Course: PHY 102 -->
-    <div class="course-card disabled">
-        <div class="course-info">
-            <h2>PHY 102: General Physics II</h2>
-            <p>20 Questions | 10 Minutes</p>
-        </div>
-        <div class="btn-disabled">Coming Soon</div>
-    </div>
+    <script>
+        let quizQuestions = [], selectedAnswers = [], currentIdx = 0, timeRemaining = 600;
 
-    <!-- Inactive Course: CHM 102 -->
-    <div class="course-card disabled">
-        <div class="course-info">
-            <h2>CHM 102: General Chemistry II</h2>
-            <p>20 Questions | 10 Minutes</p>
-        </div>
-        <div class="btn-disabled">Coming Soon</div>
-    </div>
+        function startQuiz() {
+            // Robust loading
+            try {
+                let allBanks = [
+                    ...(typeof limits !== 'undefined' ? limits : []),
+                    ...(typeof derivatives !== 'undefined' ? derivatives : []),
+                    ...(typeof functions !== 'undefined' ? functions : []),
+                    ...(typeof graphs !== 'undefined' ? graphs : [])
+                ];
 
-    <!-- Inactive Course: MTH 104 -->
-    <div class="course-card disabled">
-        <div class="course-info">
-            <h2>MTH 104: Vectors, Geometry & Dynamics</h2>
-            <p>20 Questions | 10 Minutes</p>
-        </div>
-        <div class="btn-disabled">Coming Soon</div>
-    </div>
+                if (localStorage.getItem('quizData')) {
+                    let saved = JSON.parse(localStorage.getItem('quizData'));
+                    quizQuestions = saved.questions;
+                    selectedAnswers = saved.answers;
+                    timeRemaining = saved.time;
+                } else {
+                    quizQuestions = allBanks.sort(() => 0.5 - Math.random()).slice(0, 20);
+                    selectedAnswers = new Array(quizQuestions.length).fill(null);
+                }
+            } catch(e) { console.error("Bank Error: Check your JS files for syntax errors!", e); }
 
-    <!-- Inactive Course: BIO 102 -->
-    <div class="course-card disabled">
-        <div class="course-info">
-            <h2>BIO 102: General Biology II</h2>
-            <p>20 Questions | 10 Minutes</p>
-        </div>
-        <div class="btn-disabled">Coming Soon</div>
-    </div>
+            // Timer
+            let timer = setInterval(() => {
+                timeRemaining--;
+                localStorage.setItem('quizData', JSON.stringify({questions: quizQuestions, answers: selectedAnswers, time: timeRemaining}));
+                document.getElementById('time-display').innerText = Math.floor(timeRemaining/60) + ":" + (timeRemaining%60).toString().padStart(2, '0');
+                if (timeRemaining <= 0) { clearInterval(timer); submitQuiz(); }
+            }, 1000);
 
-</div>
+            // Navigator
+            const nav = document.getElementById('nav-boxes');
+            quizQuestions.forEach((_, i) => {
+                let box = document.createElement('div');
+                box.className = 'nav-box'; box.innerText = i+1;
+                box.onclick = () => showQuestion(i);
+                nav.appendChild(box);
+            });
+            showQuestion(0);
+        }
 
+        function showQuestion(i) {
+            currentIdx = i; const q = quizQuestions[i];
+            document.getElementById('question-container').innerHTML = `<h3>Q${i+1}: ${q.q}</h3><ul class="options">${q.options.map((o, idx) => `<li class="${selectedAnswers[i]===idx?'selected':''}" onclick="selectOption(${i}, ${idx})">${o}</li>`).join('')}</ul>`;
+            document.querySelectorAll('.nav-box').forEach((b, idx) => b.className = `nav-box ${selectedAnswers[idx]!==null?'answered':''} ${idx===i?'active':''}`);
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function selectOption(qIdx, optIdx) {
+            selectedAnswers[qIdx] = optIdx;
+            localStorage.setItem('quizData', JSON.stringify({questions: quizQuestions, answers: selectedAnswers, time: timeRemaining}));
+            showQuestion(qIdx);
+        }
+
+        function changeQuestion(step) { if(currentIdx+step>=0 && currentIdx+step<20) showQuestion(currentIdx+step); }
+        
+        function submitQuiz() {
+            let score = selectedAnswers.filter((a, i) => a === quizQuestions[i].answer).length;
+            localStorage.removeItem('quizData');
+            document.getElementById('quiz-screen').innerHTML = `
+                <div style="text-align:center;">
+                    <h2>Genius Point Academy</h2>
+                    <h1>Score: ${score}/20</h1>
+                    <button onclick="location.reload()" style="background:#28a745;">Retake Test</button>
+                </div>
+            `;
+        }
+        window.onload = startQuiz;
+    </script>
 </body>
 </html>
