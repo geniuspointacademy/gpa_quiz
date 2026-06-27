@@ -2,97 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA CBT | MTH 102</title>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
-        header { background: #001f3f; color: white; padding: 15px; border-radius: 5px; text-align: center; }
-        .gpa-glow { color: #ff851b; font-weight: bold; }
-        .quiz-area { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: 20px auto; }
-        .navigator { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 20px 0; }
-        .nav-box { border: 1px solid #001f3f; padding: 8px; text-align: center; cursor: pointer; font-size: 0.9em; }
-        .nav-box.answered { background: #28a745; color: white; border: none; }
-        .nav-box.active { background: #ff851b; color: white; border: none; }
-        .options { list-style: none; padding: 0; }
-        .options li { padding: 15px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-        .options li.selected { background: #001f3f !important; color: white; border-color: #001f3f; }
-        .controls { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 5px; cursor: pointer; color: white; background: #ff851b; font-weight: bold; }
+        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .quiz-container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .option { padding: 12px; border: 1px solid #ddd; margin: 8px 0; cursor: pointer; border-radius: 5px; }
+        .selected { background: #001f3f; color: white; }
+        .correct { background: #28a745 !important; color: white; }
+        .wrong { background: #dc3545 !important; color: white; }
+        button { padding: 10px 20px; background: #ff851b; border: none; color: white; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .dance-btn { animation: dance 1s infinite alternate; background: #28a745; display: block; text-align: center; padding: 12px; color: white; border-radius: 5px; margin-top: 20px; text-decoration: none; }
+        @keyframes dance { from { transform: translateY(0); } to { transform: translateY(-5px); } }
     </style>
 </head>
 <body>
-    <header>
-        <h1>GPA <span class="gpa-glow">CBT</span></h1>
-        <div id="time-display" style="font-size: 1.2em; font-weight:bold;">10:00</div>
-    </header>
+
+<div class="quiz-container" id="app">
+    <div id="quiz-body"></div>
+</div>
+
+<script src="questions.js"></script>
+<script>
+    let currentSet = [], userAnswers = [], qIdx = 0;
+
+    function initQuiz() {
+        // 1. Get attempt number (0 to 5)
+        let attempt = parseInt(localStorage.getItem('attempt') || '0');
+        let start = attempt * 5; 
+        
+        // 2. Pick 5 from each section (Limits 0-29, Deriv 30-59, Apps 60-89, Algebra 90-119)
+        currentSet = [
+            ...allQuestions.slice(start, start + 5),
+            ...allQuestions.slice(start + 30, start + 35),
+            ...allQuestions.slice(start + 60, start + 65),
+            ...allQuestions.slice(start + 90, start + 95)
+        ];
+        
+        userAnswers = new Array(20).fill(null);
+        localStorage.setItem('attempt', (attempt + 1) % 6);
+        render();
+    }
+
+    function render() {
+        let q = currentSet[qIdx];
+        document.getElementById('quiz-body').innerHTML = `
+            <h3>Q${qIdx + 1}: ${q.q}</h3>
+            ${q.options.map((o, i) => `<div class="option ${userAnswers[qIdx] === i ? 'selected' : ''}" onclick="select(${i})">${o}</div>`).join('')}
+            <div style="margin-top:20px;">
+                <button onclick="change(-1)">Prev</button>
+                <button onclick="change(1)">Next</button>
+                <button onclick="submit()" style="background:#001f3f;">Submit</button>
+            </div>
+        `;
+        MathJax.typesetPromise();
+    }
+
+    function select(i) { userAnswers[qIdx] = i; render(); }
+    function change(step) { if(qIdx+step >= 0 && qIdx+step < 20) { qIdx += step; render(); } }
+
+    function submit() {
+        let score = userAnswers.filter((a, i) => a === currentSet[i].answer).length;
+        let body = document.getElementById('quiz-body');
+        body.innerHTML = `<h1>Score: ${score}/20</h1>`;
+        // Add review buttons
+        currentSet.forEach((q, i) => {
+            let color = userAnswers[i] === q.answer ? 'correct' : 'wrong';
+            body.innerHTML += `<div class="option ${color}">Q${i+1}: Correct was ${q.options[q.answer]}</div>`;
+        });
+        body.innerHTML += `<button onclick="location.reload()">Retake</button>
+                           <a href="https://chat.whatsapp.com/EfRqG1ekcym0MflO4MiEFj" class="dance-btn">Join GPA Community 🚀</a>`;
+    }
     
-    <div class="quiz-area">
-        <div id="question-container"></div>
-        <div class="navigator" id="nav-boxes"></div>
-        <div class="controls">
-            <button onclick="changeQuestion(-1)">Prev</button>
-            <button onclick="changeQuestion(1)">Next</button>
-            <button onclick="submitQuiz()" style="background:#001f3f;">Submit</button>
-        </div>
-    </div>
-
-    <script src="banks/limits.js"></script>
-    <script src="banks/derivatives.js"></script>
-    <script src="banks/functions.js"></script>
-    <script src="banks/graphs.js"></script>
-
-    <script>
-        let quizQuestions = [], selectedAnswers = new Array(20).fill(null), currentIdx = 0, timeRemaining = 600;
-
-        function startQuiz() {
-            if (localStorage.getItem('quizData')) {
-                let saved = JSON.parse(localStorage.getItem('quizData'));
-                quizQuestions = saved.questions;
-                selectedAnswers = saved.answers;
-                timeRemaining = saved.time;
-            } else {
-                quizQuestions = [...limits.sort(()=>0.5-Math.random()).slice(0,5), ...derivatives.sort(()=>0.5-Math.random()).slice(0,5), ...functions.sort(()=>0.5-Math.random()).slice(0,5), ...graphs.sort(()=>0.5-Math.random()).slice(0,5)].sort(()=>0.5-Math.random());
-            }
-            
-            setInterval(() => {
-                timeRemaining--;
-                localStorage.setItem('quizData', JSON.stringify({questions: quizQuestions, answers: selectedAnswers, time: timeRemaining}));
-                document.getElementById('time-display').innerText = Math.floor(timeRemaining/60) + ":" + (timeRemaining%60).toString().padStart(2, '0');
-                if (timeRemaining <= 0) submitQuiz();
-            }, 1000);
-
-            const nav = document.getElementById('nav-boxes');
-            for(let i=0; i<20; i++) {
-                let box = document.createElement('div');
-                box.className = 'nav-box'; box.innerText = i+1;
-                box.onclick = () => showQuestion(i);
-                nav.appendChild(box);
-            }
-            showQuestion(0);
-        }
-
-        function showQuestion(i) {
-            currentIdx = i; const q = quizQuestions[i];
-            document.getElementById('question-container').innerHTML = `<h3>Q${i+1}: ${q.q}</h3><ul class="options">${q.options.map((o, idx) => `<li class="${selectedAnswers[i]===idx?'selected':''}" onclick="selectOption(${i}, ${idx})">${o}</li>`).join('')}</ul>`;
-            document.querySelectorAll('.nav-box').forEach((b, idx) => b.className = `nav-box ${selectedAnswers[idx]!==null?'answered':''} ${idx===i?'active':''}`);
-            if (window.MathJax) MathJax.typesetPromise();
-        }
-
-        function selectOption(qIdx, optIdx) {
-            selectedAnswers[qIdx] = optIdx;
-            localStorage.setItem('quizData', JSON.stringify({questions: quizQuestions, answers: selectedAnswers, time: timeRemaining}));
-            showQuestion(qIdx);
-        }
-
-        function changeQuestion(step) { if(currentIdx+step>=0 && currentIdx+step<20) showQuestion(currentIdx+step); }
-        function submitQuiz() {
-            let score = selectedAnswers.filter((a, i) => a === quizQuestions[i].answer).length;
-            localStorage.removeItem('quizData');
-            alert("Submitted! Score: " + score + "/20");
-            location.reload();
-        }
-        window.onload = startQuiz;
-    </script>
+    initQuiz();
+</script>
 </body>
 </html>
